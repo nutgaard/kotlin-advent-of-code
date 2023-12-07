@@ -15,8 +15,8 @@ fun main() {
 
     val input = readInput("$dir/Input")
 
-    timed("part1") { day06.part1(input).println() }
-    timed("part2") { day06.part2(input).println() }
+    timed("part1") { part1(input).println() }
+    timed("part2") { part2(input).println() }
 }
 
 fun part1(input: List<String>): Int {

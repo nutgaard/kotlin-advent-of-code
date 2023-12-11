@@ -33,3 +33,13 @@ fun <OUT> timed(name: String, fn: () -> OUT): OUT {
     println("[$name] Calculated in ${result.duration}")
     return result.value
 }
+
+data class GridCoordinate(val row: Long, val column: Long)
+
+fun <S> List<S>.pairs(): List<Pair<S, S>> = buildList {
+    for (i in 0..<this@pairs.size) {
+        for (j in i..<this@pairs.size) {
+            this.add(this@pairs[i] to this@pairs[j])
+        }
+    }
+}

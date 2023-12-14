@@ -43,3 +43,21 @@ fun <S> List<S>.pairs(): List<Pair<S, S>> = buildList {
         }
     }
 }
+
+inline fun <reified T> Array<Array<T>>.transpose(defaultValue: T): Array<Array<T>> {
+    val rows = this.size
+    val columns = this.first().size
+    val transposed = Array(columns) {
+        Array(rows) {
+            defaultValue
+        }
+    }
+
+    for (i in 0..<rows) {
+        for (j in 0..<columns) {
+            transposed[j][i] = this[i][j]
+        }
+    }
+
+    return transposed
+}

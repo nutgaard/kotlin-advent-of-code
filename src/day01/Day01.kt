@@ -2,6 +2,7 @@ package day01
 
 import println
 import readInput
+import timed
 import verifySolution
 
 const val dir = "day01"
@@ -16,8 +17,8 @@ fun main() {
     verifySolution(testInputPart2, 281, ::part2)
 
     val input = readInput("$dir/Input")
-    part1(input).println()
-    part2(input).println()
+    timed("part1") { part1(input).println() }
+    timed("part2") { part2(input).println() }
 }
 
 fun part1(input: List<String>): Int {

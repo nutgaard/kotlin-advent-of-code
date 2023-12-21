@@ -1,9 +1,6 @@
 package day10
 
-import utils.println
-import utils.readInput
-import utils.timed
-import utils.verifySolution
+import utils.*
 import kotlin.experimental.and
 import kotlin.experimental.or
 
@@ -42,8 +39,8 @@ fun part2(input: List<String>): Int {
     val loop = findLoop(diagram)
     diagram.set(diagram.startingPoint, diagram.startingPipe)
 
-    val numberOfRows = diagram.rows.size
-    val numberOfColumns = diagram.rows.first().size
+    val numberOfRows = diagram.grid.dimension.height
+    val numberOfColumns = diagram.grid.dimension.width
     for (row in 0..<numberOfRows) {
         for (column in 0..<numberOfColumns) {
             val coordinate = Coordinate(row, column)
@@ -64,7 +61,7 @@ fun part2(input: List<String>): Int {
             var crossing = 0
             var current = coordinate
             while (current.column > 0) {
-                current = current.west()
+                current = current.left()
                 if (verticalCrossing.contains(diagram.get(current))) crossing++
             }
 
@@ -85,16 +82,16 @@ fun findLoop(diagram: Diagram): List<Coordinate> {
 
     do {
         if (currentEntity.hasNorth() && past != SOUTH) {
-            currentPosition = currentPosition.north()
+            currentPosition = currentPosition.up()
             past = NORTH
         } else if (currentEntity.hasEast() && past != WEST) {
-            currentPosition = currentPosition.east()
+            currentPosition = currentPosition.right()
             past = EAST
         } else if (currentEntity.hasSouth() && past != NORTH) {
-            currentPosition = currentPosition.south()
+            currentPosition = currentPosition.down()
             past = SOUTH
         } else if (currentEntity.hasWest() && past != EAST) {
-            currentPosition = currentPosition.west()
+            currentPosition = currentPosition.left()
             past = WEST
         } else {
             error("Got into a place with no connections")
@@ -107,19 +104,17 @@ fun findLoop(diagram: Diagram): List<Coordinate> {
 }
 
 
-class Diagram private constructor(val rows: Array<Array<MapEntity>>) {
+class Diagram private constructor(val grid: Grid<MapEntity>) {
     val startingPoint: Coordinate by lazy {
-        val rowIndex = rows.indexOfFirst { it.contains(MapEntity.START) }
-        val columnIndex = rows[rowIndex].indexOf(MapEntity.START)
-        Coordinate(rowIndex, columnIndex)
+        requireNotNull(grid.findCoordinate { it == MapEntity.START })
     }
 
     val startingPipe: MapEntity by lazy {
         MapEntity.fromConnections(
-            (if (get(startingPoint.north()).hasSouth()) NORTH else 0) or
-                    (if (get(startingPoint.south()).hasNorth()) SOUTH else 0) or
-                    (if (get(startingPoint.west()).hasEast()) WEST else 0) or
-                    (if (get(startingPoint.east()).hasWest()) EAST else 0)
+            (if (get(startingPoint.up()).hasSouth()) NORTH else 0) or
+                    (if (get(startingPoint.down()).hasNorth()) SOUTH else 0) or
+                    (if (get(startingPoint.left()).hasEast()) WEST else 0) or
+                    (if (get(startingPoint.right()).hasWest()) EAST else 0)
         )
     }
 
@@ -132,18 +127,18 @@ class Diagram private constructor(val rows: Array<Array<MapEntity>>) {
                     .toTypedArray() }
                 .toTypedArray()
 
-            return Diagram(mapEntities)
+            return Diagram(ArrayGrid(mapEntities))
         }
     }
 
     fun get(coordinate: Coordinate): MapEntity {
-        if (coordinate.row < 0 || coordinate.row >= rows.size) return MapEntity.DOT
-        if (coordinate.column < 0 || coordinate.column >= rows[0].size) return MapEntity.DOT
-        return rows[coordinate.row][coordinate.column]
+        if (coordinate.row < 0 || coordinate.row >= grid.dimension.height) return MapEntity.DOT
+        if (coordinate.column < 0 || coordinate.column >= grid.dimension.width) return MapEntity.DOT
+        return coordinate.getValue(grid)
     }
 
     fun set(coordinate: Coordinate, entity: MapEntity) {
-        rows[coordinate.row][coordinate.column] = entity
+        coordinate.setValue(grid, entity)
     }
 }
 
@@ -187,11 +182,4 @@ enum class MapEntity(val connections: Byte) {
             return entries.first { it.connections == connections }
         }
     }
-}
-
-data class Coordinate(val row: Int, val column: Int) {
-    fun north() = Coordinate(row - 1, column)
-    fun south() = Coordinate(row + 1, column)
-    fun east() = Coordinate(row, column + 1)
-    fun west() = Coordinate(row, column - 1)
 }

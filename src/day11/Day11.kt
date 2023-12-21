@@ -1,10 +1,6 @@
 package day11
 
-import utils.println
-import utils.readInput
-import utils.timed
-import utils.verifySolution
-import kotlin.math.abs
+import utils.*
 
 const val dir = "day11"
 fun main() {
@@ -22,26 +18,26 @@ fun solve(galaxyMap: GalaxyMap): Long {
     return galaxyMap.galaxies
         .pairs()
         .filter { (first, second) -> first != second }
-        .sumOf { (first, second) -> first.distanceTo(second) }
+        .sumOf { (first, second) -> first.gridStepsBetween(second) }
 }
 
 class GalaxyMap(
-    val unscaledGalaxyMap: Array<Array<Char>>,
-    val galaxies: List<GridCoordinate>,
+    val unscaledGalaxyMap: ArrayGrid<Char>,
+    val galaxies: List<Coordinate>,
 ) {
     fun applyExpansionRate(rate: Long): GalaxyMap {
         if (rate == 1L) return this
 
-        val expandingRows = unscaledGalaxyMap.indices
+        val expandingRows = unscaledGalaxyMap.rowIndices
             .map { row ->
-                val isEmpty = unscaledGalaxyMap[row].all { it == '.' }
+                val isEmpty = unscaledGalaxyMap.grid[row].all { it == '.' }
                 if (isEmpty) 1 else 0
             }
             .runningReduce(Int::plus)
 
-        val expandingColumns = unscaledGalaxyMap.first().indices
+        val expandingColumns = unscaledGalaxyMap.columnIndices
             .map { column ->
-                val isEmpty = unscaledGalaxyMap.indices.all { row -> unscaledGalaxyMap[row][column] == '.' }
+                val isEmpty = unscaledGalaxyMap.rowIndices.all { row -> unscaledGalaxyMap.grid[row][column] == '.' }
                 if (isEmpty) 1 else 0
             }
             .runningReduce(Int::plus)
@@ -50,36 +46,25 @@ class GalaxyMap(
             .map { (row, column) ->
                 val newRow = row + expandingRows[row.toInt()] * rate - expandingRows[row.toInt()]
                 val newColumn = column + expandingColumns[column.toInt()] * rate - expandingColumns[column.toInt()]
-                GridCoordinate(newRow, newColumn)
+                Coordinate(newRow, newColumn)
             }
         return GalaxyMap(unscaledGalaxyMap, newGalaxies)
     }
 
     companion object {
         fun parse(input: List<String>): GalaxyMap {
-            val galaxyMap = input.map { it.toList().toTypedArray() }.toTypedArray()
-            val galaxies = buildList {
-                for (rowIdx in galaxyMap.indices) {
-                    val row = galaxyMap[rowIdx]
-                    for (columnIdx in row.indices) {
-                        if (row[columnIdx] == '#') add(
-                            GridCoordinate(
-                                row = rowIdx.toLong(),
-                                column = columnIdx.toLong()
-                            )
-                        )
-                    }
+            val galaxyMap = input.toCharGrid()
+            val galaxies = galaxyMap
+                .mapIndexed { row, column, value ->
+                    Triple(row, column, value)
                 }
-            }
+                .flattenToList()
+                .filter { (_, _, c) -> c == '#' }
+                .map { (row, column, _) -> Coordinate(row.toLong(), column.toLong()) }
+
             return GalaxyMap(galaxyMap, galaxies)
         }
     }
-}
-
-data class GridCoordinate(val row: Long, val column: Long)
-
-fun GridCoordinate.distanceTo(other: GridCoordinate): Long {
-    return abs(this.row - other.row) + abs(this.column - other.column)
 }
 
 fun <S> List<S>.pairs(): List<Pair<S, S>> = buildList {

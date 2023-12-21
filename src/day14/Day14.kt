@@ -1,9 +1,6 @@
 package day14
 
-import utils.println
-import utils.readInput
-import utils.timed
-import utils.verifySolution
+import utils.*
 
 const val dir = "day14"
 fun main() {
@@ -20,15 +17,15 @@ fun main() {
 }
 
 fun part1(input: List<String>): Int {
-    return parse(input).transpose('X')
+    return input.toCharGrid()
+        .transpose('X')
+        .grid
         .map { applyGravity(it) }
         .sumOf { column ->
             column.mapIndexed { i, c ->
                 if (c == 'O') column.size - i else 0
             }.sum()
         }
-
-//    return -1
 }
 
 fun applyGravity(column: Array<Char>): Array<Char> {
@@ -55,31 +52,5 @@ fun applyGravity(column: Array<Char>): Array<Char> {
 }
 
 fun part2(input: List<String>): Int {
-    val grid = parse(input)
     return -1
-}
-
-typealias Grid = Array<Array<Char>>
-fun parse(input: List<String>): Grid {
-    return input.map { it.toMutableList().toTypedArray() }.toTypedArray()
-}
-
-
-
-inline fun <reified T> Array<Array<T>>.transpose(defaultValue: T): Array<Array<T>> {
-    val rows = this.size
-    val columns = this.first().size
-    val transposed = Array(columns) {
-        Array(rows) {
-            defaultValue
-        }
-    }
-
-    for (i in 0..<rows) {
-        for (j in 0..<columns) {
-            transposed[j][i] = this[i][j]
-        }
-    }
-
-    return transposed
 }

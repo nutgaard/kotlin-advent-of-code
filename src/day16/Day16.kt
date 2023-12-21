@@ -1,32 +1,29 @@
 package day16
 
-import utils.println
-import utils.readInput
-import utils.timed
-import utils.verifySolution
+import utils.*
 import kotlin.experimental.and
 import kotlin.experimental.or
 
 const val dir = "day16"
 fun main() {
-    val testInputPart1 = readInput("$dir/Part01_test").parse()
-    val testInputPart2 = readInput("$dir/Part02_test").parse()
+    val testInputPart1 = readInput("$dir/Part01_test").toCharGrid()
+    val testInputPart2 = readInput("$dir/Part02_test").toCharGrid()
 
     verifySolution(testInputPart1, 46, ::part1)
     verifySolution(testInputPart2, 51, ::part2)
 
-    val input = readInput("$dir/Input").parse()
+    val input = readInput("$dir/Input").toCharGrid()
 
     timed("part1") { part1(input).println() }
     timed("part2") { part2(input).println() }
 }
 
-fun part1(grid: Grid<Char>): Int {
+fun part1(grid: ArrayGrid<Char>): Int {
     return grid.simulate(Coordinate(0, -1) to Direction.RIGHT)
 }
 
-fun part2(grid: Grid<Char>): Int {
-    val (rows, columns) = grid.dimension()
+fun part2(grid: ArrayGrid<Char>): Int {
+    val (rows, columns) = grid.dimension
     val beams = buildSet {
         for (row in 0..<rows) {
             add(Coordinate(row, -1) to Direction.RIGHT)
@@ -40,10 +37,12 @@ fun part2(grid: Grid<Char>): Int {
     return beams.maxOf { grid.simulate(it) }
 }
 
-fun Grid<Char>.simulate(beam: Beam): Int {
-    val seenGrid: Grid<Byte> = Array(this.size) {
-        Array(this[0].size) { 0b0000 }
-    }
+fun ArrayGrid<Char>.simulate(beam: Beam): Int {
+    val seenGrid: ArrayGrid<Byte> = ArrayGrid(
+        Array(this.dimension.height) {
+            Array(this.dimension.width) { 0b0000 }
+        }
+    )
     val beams = ArrayDeque<Beam>()
     beams.add(beam)
     while (beams.isNotEmpty()) {
@@ -52,28 +51,28 @@ fun Grid<Char>.simulate(beam: Beam): Int {
         beams.addAll(nextBeams)
     }
 
-    return seenGrid.sumOf { row -> row.filter { it > 0 }.size }
+    return seenGrid.grid.sumOf { row -> row.filter { it > 0 }.size }
 }
 
 fun findNext(
-    grid: Grid<Char>,
-    seenGrid: Grid<Byte>,
+    grid: ArrayGrid<Char>,
+    seenGrid: ArrayGrid<Byte>,
     position: Coordinate,
     direction: Direction
 ): List<Beam> {
     val newPosition = position.move(direction)
 
     // Out of bounds.
-    if (newPosition.row < 0 || newPosition.row >= grid.dimension().row) return emptyList()
-    if (newPosition.column < 0 || newPosition.column >= grid.dimension().column) return emptyList()
+    if (newPosition.row < 0 || newPosition.row >= grid.dimension.height) return emptyList()
+    if (newPosition.column < 0 || newPosition.column >= grid.dimension.width) return emptyList()
 
-    val value = newPosition.get(grid)
-    val seenValue = newPosition.get(seenGrid)
+    val value = newPosition.getValue(grid)
+    val seenValue = newPosition.getValue(seenGrid)
 
     // Bitmask to check if we've entered this position from same direction earlier
     if (seenValue and direction.mask > 0) return emptyList()
     // Update bitmask
-    newPosition.set(seenGrid, seenValue or direction.mask)
+    newPosition.setValue(seenGrid, seenValue or direction.mask)
 
     return when (value) {
         '.' -> listOf(newPosition to direction)
@@ -87,6 +86,7 @@ fun findNext(
                 )
             }
         }
+
         '-' -> {
             if (direction.row == 0) {
                 listOf(newPosition to direction)
@@ -97,29 +97,27 @@ fun findNext(
                 )
             }
         }
-        '\\' -> when(direction) {
+
+        '\\' -> when (direction) {
             Direction.DOWN -> listOf(newPosition to Direction.RIGHT)
             Direction.UP -> listOf(newPosition to Direction.LEFT)
             Direction.LEFT -> listOf(newPosition to Direction.UP)
             Direction.RIGHT -> listOf(newPosition to Direction.DOWN)
         }
-        '/' -> when(direction) {
+
+        '/' -> when (direction) {
             Direction.DOWN -> listOf(newPosition to Direction.LEFT)
             Direction.UP -> listOf(newPosition to Direction.RIGHT)
             Direction.LEFT -> listOf(newPosition to Direction.DOWN)
             Direction.RIGHT -> listOf(newPosition to Direction.UP)
         }
+
         else -> emptyList()
     }
 }
 
 
 typealias Beam = Pair<Coordinate, Direction>
-typealias Grid<T> = Array<Array<T>>
-fun <T> Grid<T>.dimension(): Coordinate = Coordinate(this.size, this.first().size)
-fun List<String>.parse(): Grid<Char> = this.map { it.toCharArray().toTypedArray() }.toTypedArray()
-
-data class Coordinate(var row: Int, var column: Int)
 enum class Direction(var row: Int, var column: Int, val mask: Byte) {
     UP(-1, 0, 0b0001),
     DOWN(1, 0, 0b0010),
@@ -131,11 +129,3 @@ fun Coordinate.move(direction: Direction) = Coordinate(
     this.row + direction.row,
     this.column + direction.column,
 )
-
-fun <T> Coordinate.get(data: Array<Array<T>>): T {
-    return data[this.row][this.column]
-}
-
-fun <T> Coordinate.set(data: Array<Array<T>>, value: T) {
-    data[this.row][this.column] = value
-}

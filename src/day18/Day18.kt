@@ -1,11 +1,6 @@
 package day18
 
-import utils.println
-import utils.readInput
-import utils.timed
-import utils.verifySolution
-import kotlin.math.max
-import kotlin.math.min
+import utils.*
 
 const val dir = "day18"
 fun main() {
@@ -43,13 +38,11 @@ fun part1(input: List<DigCommand>): Int {
 
     val seen = mutableSetOf<Coordinate>()
     val queue = ArrayDeque<Coordinate>()
-    val rowIndices = grid.indices
-    val columnsIndices = grid.first().indices
     queue.addLast(Coordinate(0, 0))
     var outside = 0
     do {
         val current = queue.removeLast()
-        val value = grid[current.row][current.column]
+        val value = current.getValue(grid)
         if (value != null)continue
 
         if (seen.contains(current))continue
@@ -58,21 +51,21 @@ fun part1(input: List<DigCommand>): Int {
         outside++;
 
         val up = current.move(Direction.UP)
-        if (up.row in rowIndices) queue.addLast(up)
+        if (up.row in grid.rowIndices) queue.addLast(up)
 
         val down = current.move(Direction.DOWN)
-        if (down.row in rowIndices) queue.addLast(down)
+        if (down.row in grid.rowIndices) queue.addLast(down)
 
         val left = current.move(Direction.LEFT)
-        if (left.column in columnsIndices) queue.addLast(left)
+        if (left.column in grid.columnIndices) queue.addLast(left)
 
         val right = current.move(Direction.RIGHT)
-        if (right.column in columnsIndices) queue.addLast(right)
+        if (right.column in grid.columnIndices) queue.addLast(right)
     } while (queue.isNotEmpty())
 
-    grid.print()
+    println(grid.asString())
 
-    val totalSize = grid.size * grid.first().size
+    val totalSize = grid.dimension.height * grid.dimension.width
     return totalSize - outside
 }
 
@@ -95,58 +88,22 @@ fun buildGrid(input: List<DigCommand>): Grid<String?> {
     return grid.toArrayGrid().padByOne()
 }
 
-class MinMax(var min: Int, var max: Int) {
-    fun update(value: Int) {
-        this.min = min(this.min, value)
-        this.max = max(this.max, value)
-    }
-
-    fun size() = this.max - this.min + 1
-}
-
-class SparseGrid<T> {
-    val grid: MutableMap<Int, MutableMap<Int, T>> = mutableMapOf()
-    val rowDomain = MinMax(0, 0)
-    val columnComain = MinMax(0, 0)
-
-    fun set(coordinate: Coordinate, value: T) {
-        grid.computeIfAbsent(coordinate.row) { mutableMapOf() }[coordinate.column] = value
-        rowDomain.update(coordinate.row)
-        columnComain.update(coordinate.column)
-    }
-
-    fun get(coordinate: Coordinate): T? {
-        return grid[coordinate.row]?.get(coordinate.column)
-    }
-}
-
-inline fun <reified T> SparseGrid<T>.toArrayGrid(): Grid<T?> {
-    return Array(rowDomain.size()) { row ->
-        Array(columnComain.size()) { column ->
-            grid[row + rowDomain.min]?.get(column + columnComain.min)
-        }
-    }
-}
-
 inline fun <reified  T> Grid<T?>.padByOne(): Grid<T?> {
     val grid = this
-    val rows = grid.size
-    val columns = grid.first().size
+    val rows = grid.dimension.height
+    val columns = grid.dimension.width
     val padded = Array(rows + 2) { row ->
         Array(columns + 2) { column ->
             if (row == 0) null
             else if (row > rows) null
             else if (column == 0) null
             else if (column > columns) null
-            else grid[row - 1][column - 1]
+            else grid.getValue(Coordinate(row - 1, column - 1))
         }
     }
 
-    return padded
+    return ArrayGrid(padded)
 }
-
-data class Coordinate(val row: Int, val column: Int)
-typealias Grid<T> = Array<Array<T>>
 
 enum class Direction(val row: Int, val column: Int) {
     UP(-1, 0),
@@ -171,16 +128,3 @@ fun Coordinate.move(direction: Direction) = Coordinate(
     this.row + direction.row,
     this.column + direction.column,
 )
-
-fun <T : Any> Grid<T?>.print() {
-    val grid = this
-    buildString {
-        for (row in grid) {
-            for (column in row) {
-                if (column == null) append(".")
-                else append("#")
-            }
-            appendLine()
-        }
-    }.println()
-}

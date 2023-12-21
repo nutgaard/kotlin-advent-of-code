@@ -1,10 +1,6 @@
 package day13
 
-import utils.println
-import utils.readInput
-import utils.timed
-import utils.verifySolution
-import java.util.*
+import utils.*
 
 const val dir = "day13"
 
@@ -40,54 +36,24 @@ fun parseInput(input: List<String>): List<BitGrid> {
     return buildList {
         for (line in input) {
             if (line.isBlank()) {
-                add(BitGrid.parse(gridAggregate))
+                add(parse(gridAggregate))
                 gridAggregate.clear()
             } else {
                 gridAggregate.add(line)
             }
         }
-        add(BitGrid.parse(gridAggregate))
+        add(parse(gridAggregate))
     }
 }
 
-class BitGrid(val grid: Array<SizeAwareBitSet>) {
-    companion object {
-        fun parse(input: List<String>, trueValue: Char = '#'): BitGrid {
-            val grid = input
-                .map { line ->
-                    val bitline = SizeAwareBitSet(line.length)
-                    line.mapIndexed { index, ch -> bitline.set(index, ch == trueValue) }
-                    bitline
-                }
-            return BitGrid(grid.toTypedArray())
+fun parse(input: List<String>, trueValue: Char = '#'): BitGrid {
+    val grid = input
+        .map { line ->
+            val bitline = SizeAwareBitSet(line.length)
+            line.mapIndexed { index, ch -> bitline.set(index, ch == trueValue) }
+            bitline
         }
-    }
-
-    override fun toString(): String = buildString {
-        for (row in grid) {
-            val cardinality = row.nbits
-            for (column in 0..<cardinality) {
-                append(if (row.get(column)) "1" else "0")
-            }
-            appendLine()
-        }
-    }
-
-    fun transpose(): BitGrid {
-        val rows = grid.size
-        val columns = grid[0].nbits
-        val transposed = Array(columns) {
-            SizeAwareBitSet(rows)
-        }
-
-        for (i in 0..<rows) {
-            for (j in 0..<columns) {
-                transposed[j].set(i, grid[i].get(j))
-            }
-        }
-
-        return BitGrid(transposed)
-    }
+    return BitGrid(grid.toTypedArray())
 }
 
 fun BitGrid.findReflection(errorTolerance: Int): Pair<Int?, Int?> {
@@ -126,8 +92,4 @@ fun BitGrid.findReflectionRow(errorTolerance: Int): Int? {
 
         accumulatedError == errorTolerance
     }
-}
-
-class SizeAwareBitSet(val nbits: Int) : BitSet(nbits) {
-    override fun clone(): BitSet = super.clone() as BitSet
 }

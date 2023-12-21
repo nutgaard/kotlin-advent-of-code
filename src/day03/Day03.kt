@@ -1,10 +1,6 @@
 package day03
 
-import utils.println
-import utils.readInput
-import utils.verifySolution
-import kotlin.math.max
-import kotlin.math.min
+import utils.*
 
 const val dir = "day03"
 fun main() {
@@ -24,8 +20,8 @@ fun part1(input: List<String>): Int {
     val schematic = Schematic(input)
     return schematic.findPartNumbers()
         .filter {
-            val boundingbox = it.boundingbox.getBorder()
-            val hasAdjecentSymbol = boundingbox.any { (r, c) -> schematic.getPoint(r, c) != "." }
+            val boundingbox = it.boundingbox.border()
+            val hasAdjecentSymbol = boundingbox.any { (r, c) -> schematic.getPoint(r, c) != '.' }
             hasAdjecentSymbol
         }
         .sumOf { it.value }
@@ -42,8 +38,7 @@ fun part2(input: List<String>): Int {
 class Schematic(val rows: List<String>) {
     private val partRegex = Regex("\\d+")
     private val gearRegex = Regex("\\*")
-    private val grid = rows
-        .map { it.split("").filter { it.isNotEmpty() } }
+    private val grid: Grid<Char> = rows.toCharGrid()
 
     fun findPartNumbers(): List<PartNumber> {
         return rows
@@ -62,10 +57,10 @@ class Schematic(val rows: List<String>) {
     fun findGears(parts: List<PartNumber>): List<Gear> {
         return rows
             .flatMapIndexed { index, row ->
-                gearRegex.findAll(row).map { index to it.range.first  }
+                gearRegex.findAll(row).map { index to it.range.first }
             }
-            .mapNotNull {(r, c) ->
-                val connectedParts = parts.filter { it.boundingbox.includes(r, c) }
+            .mapNotNull { (r, c) ->
+                val connectedParts = parts.filter { it.boundingbox.includes(Coordinate(r, c)) }
                 if (connectedParts.size != 2) {
                     null
                 } else {
@@ -78,10 +73,10 @@ class Schematic(val rows: List<String>) {
             }
     }
 
-    fun getPoint(row: Int, column: Int): String {
-        return if (row < 0 || row >= grid.size) "."
-        else if (column < 0 || column >= grid[0].size) "."
-        else grid[row][column]
+    fun getPoint(row: Long, column: Long): Char {
+        return if (row < 0 || row >= grid.dimension.height) '.'
+        else if (column < 0 || column >= grid.dimension.width) '.'
+        else Coordinate(row, column).getValue(grid)
     }
 }
 
@@ -90,10 +85,12 @@ data class PartNumber(
     val column: IntRange,
     val value: Int
 ) {
-    val boundingbox by lazy { Boundingbox(
-        topLeft = row - 1 to column.first - 1,
-        bottomRight = row + 1 to column.last + 1
-    ) }
+    val boundingbox by lazy {
+        BoundingBox.fromCoordinates(
+            topLeft = Coordinate(row - 1, column = column.first - 1),
+            bottomRight = Coordinate(row + 1, column = column.last + 1),
+        )
+    }
 }
 
 data class Gear(
@@ -103,30 +100,5 @@ data class Gear(
 ) {
     fun ratio(): Int {
         return parts.first.value * parts.second.value
-    }
-}
-
-class Boundingbox(val topLeft: Pair<Int, Int>, val bottomRight: Pair<Int, Int>) {
-    val top: Int = min(topLeft.first, bottomRight.first)
-    val bottom: Int = max(topLeft.first, bottomRight.first)
-    val left: Int = min(topLeft.second, bottomRight.second)
-    val right: Int = max(topLeft.second, bottomRight.second)
-
-    fun getBorder(): List<Pair<Int, Int>> = buildSet {
-        (left..right).map {
-            add(top to it)
-            add(bottom to it)
-        }
-        (top..bottom).map {
-            add(it to left)
-            add(it to right)
-        }
-    }.toList()
-
-    fun includes(row: Int, column: Int): Boolean {
-        val withinRowRange = (top..bottom).contains(row)
-        val withinColumnRange = (left..right).contains(column)
-
-        return withinRowRange && withinColumnRange
     }
 }

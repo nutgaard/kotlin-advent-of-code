@@ -7,3 +7,6 @@ fun List<String>.toCharGrid(): ArrayGrid<Char> {
     return ArrayGrid(grid)
 }
 
+fun <S, T, U> bind(s: S, fn: (S, T) -> U): (T) -> U {
+    return { t -> fn(s, t) }
+}

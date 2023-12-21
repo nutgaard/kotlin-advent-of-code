@@ -34,4 +34,8 @@ data class Coordinate(
     fun gridStepsBetween(other: Coordinate): Long {
         return abs(this.row - other.row) + abs(this.column - other.column)
     }
+
+    fun withinBounds(grid: Grid<*>): Boolean {
+        return row in grid.rowIndices && column in grid.columnIndices
+    }
 }

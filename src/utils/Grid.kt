@@ -37,10 +37,10 @@ interface Grid<T> {
     fun getValue(coordinate: Coordinate): T
     fun setValue(coordinate: Coordinate, value: T)
 
-    fun asString(fn: (T) -> String = { it.toString() }): String = buildString {
+    fun asString(fn: (Int, Int, T) -> String = { _, _, it -> it.toString() }): String = buildString {
         for (row in 0 until dimension.height) {
             for (column in 0 until dimension.width) {
-                append(fn(getValue(Coordinate(row, column))))
+                append(fn(row, column, getValue(Coordinate(row, column))))
             }
             appendLine()
         }
@@ -75,14 +75,17 @@ data class ArrayGrid<T>(val grid: Array<Array<T>>) : Grid<T> {
 
     override fun flattenToList(): List<T> {
         val list = kotlin.collections.ArrayList<T>(dimension.height * dimension.width)
-        var index = 0
         for (row in rowIndices) {
             for (column in columnIndices) {
-                list[index++] = grid[row][column]
+                list.add(grid[row][column])
             }
         }
         return list
     }
+}
+
+inline fun <reified T, reified R> ArrayGrid<T>.map(transform: (T) -> R): Grid<R> {
+    return this.mapIndexed { _, _, v -> transform(v) }
 }
 
 inline fun <reified T, reified R> ArrayGrid<T>.mapIndexed(transform: (row: Int, column: Int, T) -> R): Grid<R> {
@@ -125,7 +128,7 @@ class BitGrid(val grid: Array<SizeAwareBitSet>) : Grid<Boolean> {
     }
 
     override fun toString(): String {
-        return asString { if (it) "1" else "0" }
+        return asString { _, _, it -> if (it) "1" else "0" }
     }
 
     override fun findCoordinate(predicate: (Boolean) -> Boolean): Coordinate? {

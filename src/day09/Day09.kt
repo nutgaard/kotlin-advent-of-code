@@ -1,9 +1,9 @@
 package day09
 
-import println
-import readInput
-import timed
-import verifySolution
+import utils.println
+import utils.readInput
+import utils.timed
+import utils.verifySolution
 
 const val dir = "day09"
 fun main() {

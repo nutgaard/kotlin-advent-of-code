@@ -1,8 +1,8 @@
 package day02
 
-import println
-import readInput
-import verifySolution
+import utils.println
+import utils.readInput
+import utils.verifySolution
 import kotlin.math.max
 
 const val dir = "day02"

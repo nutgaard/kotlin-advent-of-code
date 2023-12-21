@@ -1,9 +1,8 @@
 package day04
 
-import println
-import readInput
-import verifySolution
-import kotlin.math.min
+import utils.println
+import utils.readInput
+import utils.verifySolution
 
 const val dir = "day04"
 fun main() {

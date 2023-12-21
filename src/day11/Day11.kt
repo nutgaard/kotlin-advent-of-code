@@ -1,11 +1,9 @@
 package day11
 
-import GridCoordinate
-import pairs
-import println
-import readInput
-import timed
-import verifySolution
+import utils.println
+import utils.readInput
+import utils.timed
+import utils.verifySolution
 import kotlin.math.abs
 
 const val dir = "day11"
@@ -78,6 +76,16 @@ class GalaxyMap(
     }
 }
 
+data class GridCoordinate(val row: Long, val column: Long)
+
 fun GridCoordinate.distanceTo(other: GridCoordinate): Long {
     return abs(this.row - other.row) + abs(this.column - other.column)
+}
+
+fun <S> List<S>.pairs(): List<Pair<S, S>> = buildList {
+    for (i in 0..<this@pairs.size) {
+        for (j in i..<this@pairs.size) {
+            this.add(this@pairs[i] to this@pairs[j])
+        }
+    }
 }

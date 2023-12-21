@@ -1,9 +1,9 @@
 package day05
 
-import println
-import readInput
-import timed
-import verifySolution
+import utils.println
+import utils.readInput
+import utils.timed
+import utils.verifySolution
 import java.util.*
 import kotlin.math.min
 import kotlin.streams.asStream

@@ -1,9 +1,9 @@
 package day18
 
-import println
-import readInput
-import timed
-import verifySolution
+import utils.println
+import utils.readInput
+import utils.timed
+import utils.verifySolution
 import kotlin.math.max
 import kotlin.math.min
 

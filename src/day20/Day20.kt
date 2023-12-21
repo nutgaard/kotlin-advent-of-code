@@ -1,9 +1,9 @@
 package day20
 
-import println
-import readInput
-import timed
-import verifySolution
+import utils.println
+import utils.readInput
+import utils.timed
+import utils.verifySolution
 
 const val dir = "day20"
 fun main() {
@@ -12,7 +12,7 @@ fun main() {
 
     verifySolution(testInputPart1, 32000000, ::part1)
     verifySolution(testInputPart2, 11687500, ::part1)
-//    verifySolution(testInputPart2, -1, ::part2)
+//    utils.verifySolution(testInputPart2, -1, ::part2)
 
     val input = readInput("$dir/Input")
 
@@ -60,7 +60,7 @@ fun runButtonPress(graph: Graph) {
     while (processor.isNotEmpty()) {
         val (pulse, destination) = processor.pop()
         val module = graph[destination] ?: continue
-//        println("${pulse.source.name} -${pulse.value}-> $destination")
+//        utils.println("${pulse.source.name} -${pulse.value}-> $destination")
 
         module.process(pulse)
     }

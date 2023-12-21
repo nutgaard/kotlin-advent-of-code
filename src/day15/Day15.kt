@@ -1,9 +1,9 @@
 package day15
 
-import println
-import readInput
-import timed
-import verifySolution
+import utils.println
+import utils.readInput
+import utils.timed
+import utils.verifySolution
 
 const val dir = "day15"
 fun main() {

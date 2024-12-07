@@ -1,11 +1,13 @@
 #!/usr/bin/env sh
 
+read -p "Enter year: " year
 read -p "Enter day: " day
-echo "Prepping files for $day"
+echo "Prepping files for $year - $day"
 
-rm -r "src/day$day"
-cp -r "src/dayXX" "src/day$day"
+rm -rf "src/year$year/day$day"
+cp -r "src/dayXX" "src/year$year/day$day"
 
-sed -i "" "s/XX/$day/g" "src/day$day/DayXX.kt"
+sed -i "" "s/YY/$year/g" "src/year$year/day$day/DayXX.kt"
+sed -i "" "s/XX/$day/g" "src/year$year/day$day/DayXX.kt"
 
-mv "src/day$day/DayXX.kt" "src/day$day/Day$day.kt"
+mv "src/year$year/day$day/DayXX.kt" "src/year$year/day$day/Day$day.kt"

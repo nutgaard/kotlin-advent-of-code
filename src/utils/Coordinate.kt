@@ -8,6 +8,11 @@ data class Coordinate(
 ) {
     companion object {
         operator fun invoke(row: Int, column: Int) = Coordinate(row.toLong(), column.toLong())
+
+        fun fromArrayIndex(index: Int, columnCount: Int) = Coordinate(
+            row = index / columnCount,
+            column = index % columnCount
+        )
     }
 
     fun <T> getValue(grid: Grid<T>): T {
@@ -35,7 +40,11 @@ data class Coordinate(
         return abs(this.row - other.row) + abs(this.column - other.column)
     }
 
-    fun withinBounds(grid: Grid<*>): Boolean {
+    infix fun withinBoundsOf(grid: Grid<*>): Boolean {
         return row in grid.rowIndices && column in grid.columnIndices
+    }
+
+    infix fun notWithinBoundsOf(grid: Grid<*>): Boolean {
+        return !this.withinBoundsOf(grid)
     }
 }

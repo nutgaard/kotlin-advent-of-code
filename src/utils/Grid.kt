@@ -48,6 +48,8 @@ interface Grid<T> {
 
     fun findCoordinate(predicate: (T) -> Boolean): Coordinate?
     fun flattenToList(): List<T>
+
+    fun copyOf(): Grid<T>
 }
 
 data class ArrayGrid<T>(val grid: Array<Array<T>>) : Grid<T> {
@@ -81,6 +83,16 @@ data class ArrayGrid<T>(val grid: Array<Array<T>>) : Grid<T> {
             }
         }
         return list
+    }
+
+    override fun toString(): String = asString()
+
+    override fun copyOf(): ArrayGrid<T> {
+        val grid = this.grid.copyOf()
+        for (index in grid.indices) {
+            grid[index] = grid[index].copyOf()
+        }
+        return ArrayGrid(grid)
     }
 }
 
@@ -162,6 +174,10 @@ class BitGrid(val grid: Array<SizeAwareBitSet>) : Grid<Boolean> {
         }
 
         return BitGrid(transposed)
+    }
+
+    override fun copyOf(): BitGrid {
+        TODO("Not yet implemented")
     }
 }
 

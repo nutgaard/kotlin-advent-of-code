@@ -5,3 +5,5 @@ src/**/*.txt
 golang/**/*.txt
 !src/dayXX/*.txt
 !golang/cmd/dayXX/*.txt
+
+out/

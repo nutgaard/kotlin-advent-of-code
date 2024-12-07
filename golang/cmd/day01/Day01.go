@@ -11,9 +11,9 @@ import (
 var digitMap = make(map[string]rune)
 
 func main() {
-	testInput1 := utils.ReadFile("cmd/day01/Part01_test.txt")
-	testInput2 := utils.ReadFile("cmd/day01/Part02_test.txt")
-	input := utils.ReadFile("cmd/day01/Input.txt")
+	testInput1 := utils.ReadFile("cmd/year2023.day01/Part01_test.txt")
+	testInput2 := utils.ReadFile("cmd/year2023.day01/Part02_test.txt")
+	input := utils.ReadFile("cmd/year2023.day01/Input.txt")
 
 	digitMap["one"] = '1'
 	digitMap["two"] = '2'

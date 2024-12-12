@@ -33,7 +33,7 @@ enum class Direction(val row: Int, val column: Int) {
     }
 }
 
-fun Coordinate.move(direction: Direction) = Coordinate(
+fun Coordinate.move(direction: Direction) = Coordinate.of(
     this.row + direction.row,
     this.column + direction.column,
 )

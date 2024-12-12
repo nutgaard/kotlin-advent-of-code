@@ -60,7 +60,7 @@ class Schematic(val rows: List<String>) {
                 gearRegex.findAll(row).map { index to it.range.first }
             }
             .mapNotNull { (r, c) ->
-                val connectedParts = parts.filter { it.boundingbox.includes(Coordinate(r, c)) }
+                val connectedParts = parts.filter { it.boundingbox.includes(Coordinate.of(r, c)) }
                 if (connectedParts.size != 2) {
                     null
                 } else {
@@ -76,7 +76,7 @@ class Schematic(val rows: List<String>) {
     fun getPoint(row: Long, column: Long): Char {
         return if (row < 0 || row >= grid.dimension.height) '.'
         else if (column < 0 || column >= grid.dimension.width) '.'
-        else Coordinate(row, column).getValue(grid)
+        else Coordinate.of(row, column).getValue(grid)
     }
 }
 
@@ -87,8 +87,8 @@ data class PartNumber(
 ) {
     val boundingbox by lazy {
         BoundingBox.fromCoordinates(
-            topLeft = Coordinate(row - 1, column = column.first - 1),
-            bottomRight = Coordinate(row + 1, column = column.last + 1),
+            topLeft = Coordinate.of(row - 1, column = column.first - 1),
+            bottomRight = Coordinate.of(row + 1, column = column.last + 1),
         )
     }
 }

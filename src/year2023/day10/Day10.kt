@@ -43,7 +43,7 @@ fun part2(input: List<String>): Int {
     val numberOfColumns = diagram.grid.dimension.width
     for (row in 0..<numberOfRows) {
         for (column in 0..<numberOfColumns) {
-            val coordinate = Coordinate(row, column)
+            val coordinate = Coordinate.of(row, column)
             if (!loop.contains(coordinate)) {
                 diagram.set(coordinate, MapEntity.DOT)
             }
@@ -54,7 +54,7 @@ fun part2(input: List<String>): Int {
 
     for (row in 0..<numberOfRows) {
         for (column in 0..<numberOfColumns) {
-            val coordinate = Coordinate(row, column)
+            val coordinate = Coordinate.of(row, column)
             if (column == 0) continue
             else if (loop.contains(coordinate)) continue
 

@@ -6,6 +6,8 @@ fun List<String>.toCharGrid(): ArrayGrid<Char> {
         .toTypedArray()
     return ArrayGrid(grid)
 }
+fun List<String>.toIntGrid(): ArrayGrid<Int> = this.toCharGrid().map { it - '0' }
+fun List<String>.toLongGrid(): ArrayGrid<Long> = this.toCharGrid().map { (it - '0').toLong() }
 
 fun <S, T, U> bind(s: S, fn: (S, T) -> U): (T) -> U {
     return { t -> fn(s, t) }

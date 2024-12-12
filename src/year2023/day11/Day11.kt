@@ -46,7 +46,7 @@ class GalaxyMap(
             .map { (row, column) ->
                 val newRow = row + expandingRows[row.toInt()] * rate - expandingRows[row.toInt()]
                 val newColumn = column + expandingColumns[column.toInt()] * rate - expandingColumns[column.toInt()]
-                Coordinate(newRow, newColumn)
+                Coordinate.of(newRow, newColumn)
             }
         return GalaxyMap(unscaledGalaxyMap, newGalaxies)
     }
@@ -60,7 +60,7 @@ class GalaxyMap(
                 }
                 .flattenToList()
                 .filter { (_, _, c) -> c == '#' }
-                .map { (row, column, _) -> Coordinate(row.toLong(), column.toLong()) }
+                .map { (row, column, _) -> Coordinate.of(row.toLong(), column.toLong()) }
 
             return GalaxyMap(galaxyMap, galaxies)
         }

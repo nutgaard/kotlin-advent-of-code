@@ -38,7 +38,7 @@ fun part1(input: List<DigCommand>): Int {
 
     val seen = mutableSetOf<Coordinate>()
     val queue = ArrayDeque<Coordinate>()
-    queue.addLast(Coordinate(0, 0))
+    queue.addLast(Coordinate.of(0, 0))
     var outside = 0
     do {
         val current = queue.removeLast()
@@ -75,7 +75,7 @@ fun part2(input: List<DigCommand>): Int {
 
 fun buildGrid(input: List<DigCommand>): Grid<String?> {
     val grid = SparseGrid<String>()
-    var position = Coordinate(0, 0)
+    var position = Coordinate.of(0, 0)
     grid.set(position, "???")
 
     for (command in input) {
@@ -98,7 +98,7 @@ inline fun <reified  T> Grid<T?>.padByOne(): Grid<T?> {
             else if (row > rows) null
             else if (column == 0) null
             else if (column > columns) null
-            else grid.getValue(Coordinate(row - 1, column - 1))
+            else grid.getValue(Coordinate.of(row - 1, column - 1))
         }
     }
 

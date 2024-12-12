@@ -19,19 +19,19 @@ fun main() {
 }
 
 fun part1(grid: ArrayGrid<Char>): Int {
-    return grid.simulate(Coordinate(0, -1) to Direction.RIGHT)
+    return grid.simulate(Coordinate.of(0, -1) to Direction.RIGHT)
 }
 
 fun part2(grid: ArrayGrid<Char>): Int {
     val (rows, columns) = grid.dimension
     val beams = buildSet {
         for (row in 0..<rows) {
-            add(Coordinate(row, -1) to Direction.RIGHT)
-            add(Coordinate(row, columns) to Direction.LEFT)
+            add(Coordinate.of(row, -1) to Direction.RIGHT)
+            add(Coordinate.of(row, columns) to Direction.LEFT)
         }
         for (column in 0..<columns) {
-            add(Coordinate(-1, column) to Direction.DOWN)
-            add(Coordinate(rows, column) to Direction.UP)
+            add(Coordinate.of(-1, column) to Direction.DOWN)
+            add(Coordinate.of(rows, column) to Direction.UP)
         }
     }
     return beams.maxOf { grid.simulate(it) }
@@ -125,7 +125,7 @@ enum class Direction(var row: Int, var column: Int, val mask: Byte) {
     LEFT(0, -1, 0b1000)
 }
 
-fun Coordinate.move(direction: Direction) = Coordinate(
+fun Coordinate.move(direction: Direction) = Coordinate.of(
     this.row + direction.row,
     this.column + direction.column,
 )

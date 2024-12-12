@@ -26,12 +26,12 @@ data class BoundingBox(
     }
     fun border(): Set<Coordinate> = buildSet {
         (left..right).forEach {
-            add(Coordinate(top, it))
-            add(Coordinate(bottom, it))
+            add(Coordinate.of(top, it))
+            add(Coordinate.of(bottom, it))
         }
         (top..bottom).forEach {
-            add(Coordinate(it, left))
-            add(Coordinate(it, right))
+            add(Coordinate.of(it, left))
+            add(Coordinate.of(it, right))
         }
     }
 

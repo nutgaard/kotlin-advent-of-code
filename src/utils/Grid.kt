@@ -17,6 +17,18 @@ class SparseGrid<T> {
     fun get(coordinate: Coordinate): T? {
         return grid[coordinate.row]?.get(coordinate.column)
     }
+
+    fun <TAcc> reduce(initialValue: TAcc, fn: (acc: TAcc, value: T, coordinate: Coordinate) -> TAcc): TAcc {
+        var acc = initialValue
+        for (rowKey in grid.keys) {
+            val row = grid[rowKey]!!
+            for (columnKey in row.keys) {
+                val value = row[columnKey]!!
+                acc = fn(acc, value, Coordinate.of(rowKey, columnKey))
+            }
+        }
+        return acc
+    }
 }
 
 inline fun <reified T> SparseGrid<T>.toArrayGrid(): Grid<T?> {
@@ -28,19 +40,22 @@ inline fun <reified T> SparseGrid<T>.toArrayGrid(): Grid<T?> {
     return ArrayGrid(grid)
 }
 
-data class Dimensjon(val height: Int, val width: Int)
+data class Dimensjon(val height: Int, val width: Int) {
+    val area: Int = height * width
+}
 interface Grid<T> {
     val dimension: Dimensjon
     val rowIndices: IntRange
     val columnIndices: IntRange
 
     fun getValue(coordinate: Coordinate): T
+    fun getRow(row: Int): Array<T>
     fun setValue(coordinate: Coordinate, value: T)
 
     fun asString(fn: (Int, Int, T) -> String = { _, _, it -> it.toString() }): String = buildString {
         for (row in 0 until dimension.height) {
             for (column in 0 until dimension.width) {
-                append(fn(row, column, getValue(Coordinate(row, column))))
+                append(fn(row, column, getValue(CoordinateImpl(row, column))))
             }
             appendLine()
         }
@@ -50,6 +65,42 @@ interface Grid<T> {
     fun flattenToList(): List<T>
 
     fun copyOf(): Grid<T>
+
+    fun <TAcc> reduce(initialValue: TAcc, fn: (acc: TAcc, value: T, coordinate: Coordinate) -> TAcc): TAcc {
+        var acc = initialValue
+        for (rowIndex in rowIndices) {
+            for (columnIndex in columnIndices) {
+                val coordinate = Coordinate.of(rowIndex, columnIndex)
+                acc = fn(acc, getValue(coordinate), coordinate)
+            }
+        }
+        return acc
+    }
+
+    fun indicies(): Iterable<Coordinate> {
+        val dimension = this.dimension
+        val grid = this
+        return object : Iterable<Coordinate> {
+            override fun iterator(): Iterator<Coordinate> {
+                var maybeCurrent: Coordinate? = if (dimension.area == 0) null else Coordinate.of(0, 0)
+                return object : Iterator<Coordinate> {
+                    override fun hasNext(): Boolean {
+                        return maybeCurrent != null
+                    }
+
+                    override fun next(): Coordinate {
+                        val current = requireNotNull(maybeCurrent) { "Iterator has finished" }
+                        val candidates = arrayOf(
+                            current.move(Direction.RIGHT),
+                            Coordinate.of(current.row + 1, 0),
+                        )
+                        maybeCurrent = candidates.firstOrNull { it withinBoundsOf grid }
+                        return current
+                    }
+                }
+            }
+        }
+    }
 }
 
 data class ArrayGrid<T>(val grid: Array<Array<T>>) : Grid<T> {
@@ -66,10 +117,14 @@ data class ArrayGrid<T>(val grid: Array<Array<T>>) : Grid<T> {
         grid[coordinate.row.toInt()][coordinate.column.toInt()] = value
     }
 
+    override fun getRow(row: Int): Array<T> {
+        return grid[row].copyOf()
+    }
+
     override fun findCoordinate(predicate: (T) -> Boolean): Coordinate? {
         for (row in rowIndices) {
             for (column in columnIndices) {
-                if (predicate(grid[row][column])) return Coordinate(row, column)
+                if (predicate(grid[row][column])) return Coordinate.of(row, column)
             }
         }
         return null
@@ -96,11 +151,11 @@ data class ArrayGrid<T>(val grid: Array<Array<T>>) : Grid<T> {
     }
 }
 
-inline fun <reified T, reified R> ArrayGrid<T>.map(transform: (T) -> R): Grid<R> {
+inline fun <reified T, reified R> ArrayGrid<T>.map(transform: (T) -> R): ArrayGrid<R> {
     return this.mapIndexed { _, _, v -> transform(v) }
 }
 
-inline fun <reified T, reified R> ArrayGrid<T>.mapIndexed(transform: (row: Int, column: Int, T) -> R): Grid<R> {
+inline fun <reified T, reified R> ArrayGrid<T>.mapIndexed(transform: (row: Int, column: Int, T) -> R): ArrayGrid<R> {
     val grid = Array(dimension.height) { row ->
         Array(dimension.width) { column ->
             transform(row, column, grid[row][column])
@@ -139,6 +194,11 @@ class BitGrid(val grid: Array<SizeAwareBitSet>) : Grid<Boolean> {
         grid[coordinate.row.toInt()][coordinate.column.toInt()] = value
     }
 
+    override fun getRow(row: Int): Array<Boolean> {
+        val rowBits = grid[row]
+        return Array(size = rowBits.nbits) { rowBits.get(it) }
+    }
+
     override fun toString(): String {
         return asString { _, _, it -> if (it) "1" else "0" }
     }
@@ -146,7 +206,7 @@ class BitGrid(val grid: Array<SizeAwareBitSet>) : Grid<Boolean> {
     override fun findCoordinate(predicate: (Boolean) -> Boolean): Coordinate? {
         for (row in rowIndices) {
             for (column in columnIndices) {
-                if (predicate(grid[row][column])) return Coordinate(row, column)
+                if (predicate(grid[row][column])) return Coordinate.of(row, column)
             }
         }
         return null

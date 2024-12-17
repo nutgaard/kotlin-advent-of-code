@@ -23,12 +23,30 @@ enum class Direction(val row: Int, val column: Int) {
         }
     }
 
-    fun rotateRight(): Direction {
+    fun rotateClockwise(): Direction {
         return when (this) {
             UP -> RIGHT
             RIGHT -> DOWN
             DOWN -> LEFT
             LEFT -> UP
+        }
+    }
+
+    fun rotateCounterClockwise(): Direction {
+        return when (this) {
+            UP -> LEFT
+            RIGHT -> UP
+            DOWN -> RIGHT
+            LEFT -> DOWN
+        }
+    }
+
+    fun opposite(): Direction {
+        return when (this) {
+            UP -> DOWN
+            RIGHT -> LEFT
+            DOWN -> UP
+            LEFT -> RIGHT
         }
     }
 }

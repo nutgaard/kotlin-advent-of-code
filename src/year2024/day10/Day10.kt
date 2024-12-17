@@ -1,8 +1,6 @@
 package year2024.day10
 
 import utils.*
-import java.sql.Connection
-import java.util.*
 
 const val dir = "year2024/day10"
 fun main() {
@@ -43,7 +41,7 @@ fun part2(input: List<String>): Int {
 fun findValidTrails(grid: ArrayGrid<Int>, trailhead: Coordinate, allowReuse: Boolean): Int {
     var trailsFound: Int = 0
     val visited = mutableSetOf<Coordinate>()
-    val stack = Stack<Coordinate>()
+    val stack = ConfigurableDeque.Stack<Coordinate>()
     stack.push(trailhead)
 
     do {

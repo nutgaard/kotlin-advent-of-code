@@ -40,11 +40,11 @@ inline fun <reified T> SparseGrid<T>.toArrayGrid(): Grid<T?> {
     return ArrayGrid(grid)
 }
 
-data class Dimensjon(val height: Int, val width: Int) {
+data class Dimension(val height: Int, val width: Int) {
     val area: Int = height * width
 }
 interface Grid<T> {
-    val dimension: Dimensjon
+    val dimension: Dimension
     val rowIndices: IntRange
     val columnIndices: IntRange
 
@@ -104,7 +104,7 @@ interface Grid<T> {
 }
 
 data class ArrayGrid<T>(val grid: Array<Array<T>>) : Grid<T> {
-    override val dimension = Dimensjon(grid.size, grid.first().size)
+    override val dimension = Dimension(grid.size, grid.first().size)
     override val rowIndices: IntRange = grid.indices
     override val columnIndices: IntRange = grid.first().indices
 
@@ -149,6 +149,17 @@ data class ArrayGrid<T>(val grid: Array<Array<T>>) : Grid<T> {
         }
         return ArrayGrid(grid)
     }
+
+    companion object {
+        inline fun <reified T> create(dimension: Dimension, fn: (coordinate: Coordinate) -> T): ArrayGrid<T> {
+            val grid = Array(dimension.height) { row ->
+                Array(dimension.width) { column ->
+                    fn(Coordinate.of(row, column))
+                }
+            }
+            return ArrayGrid(grid)
+        }
+    }
 }
 
 inline fun <reified T, reified R> ArrayGrid<T>.map(transform: (T) -> R): ArrayGrid<R> {
@@ -181,7 +192,7 @@ inline fun <reified T> ArrayGrid<T>.transpose(defaultValue: T): ArrayGrid<T> {
 }
 
 class BitGrid(val grid: Array<SizeAwareBitSet>) : Grid<Boolean> {
-    override val dimension = Dimensjon(grid.size, grid.first().nbits)
+    override val dimension = Dimension(grid.size, grid.first().nbits)
     override val rowIndices: IntRange = grid.indices
     override val columnIndices: IntRange = 0 until grid.first().nbits
 

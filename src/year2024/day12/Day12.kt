@@ -1,7 +1,6 @@
 package year2024.day12
 
 import utils.*
-import java.util.*
 
 const val dir = "year2024/day12"
 fun main() {
@@ -107,7 +106,7 @@ fun findRegions(input: List<String>): List<Region> {
 
 fun ArrayGrid<Char>.findRegionFrom(startingPoint: Coordinate): Region {
     val char = this.getValue(startingPoint)
-    val stack = Stack<Coordinate>()
+    val stack = ConfigurableDeque.Stack<Coordinate>()
     val visited = mutableSetOf<Coordinate>()
     stack.push(startingPoint)
 
@@ -147,7 +146,7 @@ fun ArrayGrid<Char>.findRegionFrom(startingPoint: Coordinate): Region {
 
 fun List<Fence>.findSegment(startingFence: Fence): FenceSegment {
     val byCoordinate = this.associateBy { it.coordinate to it.direction }
-    val stack = Stack<Fence>()
+    val stack = ConfigurableDeque.Stack<Fence>()
     val visited = mutableSetOf<Fence>()
     stack.push(startingFence)
 

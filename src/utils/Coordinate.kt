@@ -57,6 +57,8 @@ interface Coordinate {
             column = index % columnCount
         )
     }
+
+    fun asCopy(): Coordinate
 }
 
 data class CoordinateImpl(
@@ -65,5 +67,9 @@ data class CoordinateImpl(
 ): Coordinate {
     companion object {
         operator fun invoke(row: Int, column: Int) = CoordinateImpl(row.toLong(), column.toLong())
+    }
+
+    override fun asCopy(): Coordinate {
+        return this.copy()
     }
 }

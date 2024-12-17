@@ -1,13 +1,22 @@
 package utils
 
+import java.io.Writer
 import kotlin.io.path.Path
 import kotlin.io.path.readLines
+import kotlin.io.path.writeLines
+import kotlin.io.path.writer
 import kotlin.time.measureTimedValue
 
 /**
  * Reads lines from the given input txt file.
  */
 fun readInput(name: String) = Path("src/$name.txt").readLines()
+fun writerForOutput(name: String): Writer {
+    return Path("src/$name.txt").writer()
+}
+fun writeOutput(name: String, content: List<String>) {
+    Path("src/$name.txt").writeLines(content)
+}
 
 /**
  * The cleaner shorthand for printing output.

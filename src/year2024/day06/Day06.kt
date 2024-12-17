@@ -110,7 +110,7 @@ fun walkIt(
             if (tracing.containsElement(position, direction)) return WalkingResult.Cycle
             tracing.addElement(position, direction)
         } else {
-            direction = direction.rotateRight()
+            direction = direction.rotateClockwise()
         }
     } while (true)
 

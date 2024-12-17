@@ -96,7 +96,7 @@ class BidHand(private val handStr: String, private val bidStr: String) {
             fixupFn: (List<String>) -> List<String> = { it },
         ): Long {
             val handType = findHandType(fixupFn(cards)).score.toString().padStart(2, '0')
-            val cardValues: String = cards.map { cardScoring[it] ?: "00" }.joinToString("")
+            val cardValues: String = cards.joinToString("") { cardScoring[it] ?: "00" }
 
             return "$handType$cardValues".toLong()
         }

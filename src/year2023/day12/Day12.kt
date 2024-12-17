@@ -15,30 +15,14 @@ fun main() {
         require(ConditionRecord.parse(it).isValid(0))
     }
 
-
-
-    val debug = ConditionRecord.parse(".??..??...?##. 1,1,3").findValidFillers();
-
     require(ConditionRecord.parse("???.### 1,1,3").isValid(5) == true)
     require(ConditionRecord.parse("???.### 1,1,3").isValid(2) == false)
     require(ConditionRecord.parse(".??..??...?##. 1,1,3").findValidFillers().size == 1)
-
-    /**
-     * ?#?.?#?#????????#?. 2,4,4,3
-     * ##?.####???????#?. 2,4,4,3
-     *
-     * ##?.?####???????#?. 2,4,4,3
-     *
-     * ?##.?#?#????????#?. 2,4,4,3
-     */
-
 
     verifySolution(testInputPart1, 21, ::part1)
     verifySolution(testInputPart2, -1, ::part2)
 
     val input = readInput("$dir/Input")
-    val validInTest = input.map { ConditionRecord.parse(it).findValidFillers() }
-
     timed("part1") { part1(input).println() }
     timed("part2") { part2(input).println() }
 }

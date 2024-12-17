@@ -68,8 +68,9 @@ class GalaxyMap(
 }
 
 fun <S> List<S>.pairs(): List<Pair<S, S>> = buildList {
-    for (i in 0..<this@pairs.size) {
-        for (j in i..<this@pairs.size) {
+    val size = this@pairs.size
+    for (i in 0..<size) {
+        for (j in i..<size) {
             this.add(this@pairs[i] to this@pairs[j])
         }
     }

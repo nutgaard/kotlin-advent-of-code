@@ -48,7 +48,7 @@ fun part1(input: List<DigCommand>): Int {
         if (seen.contains(current))continue
         seen.add(current)
 
-        outside++;
+        outside++
 
         val up = current.move(Direction.UP)
         if (up.row in grid.rowIndices) queue.addLast(up)

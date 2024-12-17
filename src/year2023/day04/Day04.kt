@@ -44,7 +44,7 @@ fun matchingNumbers(cardString: String): Int {
         .split(":").last()
         .split("|")
         .map {
-            it.trim().split(space).map { it.trim() }
+            it.trim().split(space).map(String::trim)
         }
 
     return yourNumbers.filter { winningNumbers.contains(it) }.size

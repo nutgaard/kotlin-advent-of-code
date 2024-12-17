@@ -5,12 +5,12 @@ import utils.*
 const val dir = "year2024/day08"
 fun main() {
     val testInputPart1 = readInput("${dir}/Part01_test")
-    val testInputPart2_1 = readInput("${dir}/Part02_1_test")
-    val testInputPart2_2 = readInput("${dir}/Part02_2_test")
+    val testInputPart2x1 = readInput("${dir}/Part02_1_test")
+    val testInputPart2x2 = readInput("${dir}/Part02_2_test")
 
     verifySolution(testInputPart1, 14, ::part1)
-    verifySolution(testInputPart2_1, 9, ::part2)
-    verifySolution(testInputPart2_2, 34, ::part2)
+    verifySolution(testInputPart2x1, 9, ::part2)
+    verifySolution(testInputPart2x2, 34, ::part2)
 
     val input = readInput("$dir/Input")
 
@@ -34,7 +34,8 @@ fun part2(input: List<String>): Int {
         .size
 }
 
-typealias Frequencies = MutableMap<Char, MutableList<Coordinate>>;
+typealias Frequencies = MutableMap<Char, MutableList<Coordinate>>
+
 fun List<String>.gridFrequencies(): Pair<Grid<Char>, Frequencies> {
     val grid = this.toCharGrid()
     val frequencies: MutableMap<Char, MutableList<Coordinate>> = grid.reduce(mutableMapOf()){ acc, value, coordinate ->

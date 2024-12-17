@@ -22,7 +22,7 @@ fun main() {
 fun part1(input: List<String>): Int {
     val separator = "O"
     val lineLength = input[0].length
-    val dotLine = ".".repeat(lineLength);
+    val dotLine = ".".repeat(lineLength)
     val regexs = listOf(
         // Horizontal
         Regex("(X)(M)(A)(S)"),
@@ -87,7 +87,7 @@ fun part2(input: List<String>): Int {
     return matches.size
 }
 
-fun debug(input: List<String>, matches: List<MatchResult>): Unit {
+fun debug(input: List<String>, matches: List<MatchResult>) {
     val lineLength = input[0].length
     val grid = input.toCharGrid().map { "." }
 

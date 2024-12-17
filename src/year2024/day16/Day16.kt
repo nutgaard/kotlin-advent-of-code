@@ -5,11 +5,11 @@ import kotlin.math.min
 
 const val dir = "year2024/day16"
 fun main() {
-    val testInputPart1_1 = readInput("${dir}/Part01_1_test")
-    val testInputPart1_2 = readInput("${dir}/Part01_2_test")
+    val testInputPart1x1 = readInput("${dir}/Part01_1_test")
+    val testInputPart1x2 = readInput("${dir}/Part01_2_test")
 
-    verifySolution(testInputPart1_1, Result(7036, 45), ::part2)
-    verifySolution(testInputPart1_2, Result(11048, 64), ::part2)
+    verifySolution(testInputPart1x1, Result(7036, 45), ::part2)
+    verifySolution(testInputPart1x2, Result(11048, 64), ::part2)
 
     val input = readInput("$dir/Input")
 

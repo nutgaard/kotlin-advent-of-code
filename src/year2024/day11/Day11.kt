@@ -1,23 +1,20 @@
 package year2024.day11
 
 import utils.*
-import java.util.LinkedList
-import kotlin.math.abs
-import kotlin.math.log10
 
 const val dir = "year2024/day11"
 fun main() {
-    val testInputPart1_1 = readInput("${dir}/Part01_1_test")
-    val testInputPart1_2 = readInput("${dir}/Part01_2_test")
+    val testInputPart1x1 = readInput("${dir}/Part01_1_test")
+    val testInputPart1x2 = readInput("${dir}/Part01_2_test")
 
-    verifySolution(testInputPart1_1, 7, bind(1, ::part1))
-    verifySolution(testInputPart1_2, 3, bind(1, ::part1))
-    verifySolution(testInputPart1_2, 4, bind(2, ::part1))
-    verifySolution(testInputPart1_2, 5, bind(3, ::part1))
-    verifySolution(testInputPart1_2, 9, bind(4, ::part1))
-    verifySolution(testInputPart1_2, 13, bind(5, ::part1))
-    verifySolution(testInputPart1_2, 22, bind(6, ::part1))
-    verifySolution(testInputPart1_2, 55312, bind(25, ::part1))
+    verifySolution(testInputPart1x1, 7, bind(1, ::part1))
+    verifySolution(testInputPart1x2, 3, bind(1, ::part1))
+    verifySolution(testInputPart1x2, 4, bind(2, ::part1))
+    verifySolution(testInputPart1x2, 5, bind(3, ::part1))
+    verifySolution(testInputPart1x2, 9, bind(4, ::part1))
+    verifySolution(testInputPart1x2, 13, bind(5, ::part1))
+    verifySolution(testInputPart1x2, 22, bind(6, ::part1))
+    verifySolution(testInputPart1x2, 55312, bind(25, ::part1))
 
     val input = readInput("$dir/Input")
 
@@ -52,11 +49,4 @@ fun process(maxStep: Int, value: Long, step: Int): Long {
     memoTable[key] = expandedValue
 
     return expandedValue
-}
-
-fun Long.length(): Int {
-    return when (this) {
-        0L -> 1
-        else -> log10(abs(toDouble())).toInt() + 1
-    }
 }

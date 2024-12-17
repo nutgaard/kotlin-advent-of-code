@@ -83,7 +83,7 @@ data class State(
     var robot: Coordinate = requireNotNull(grid.findCoordinate { it == '@' })
 
     fun move(direction: Direction) {
-        var nextPosition = robot.move(direction)
+        val nextPosition = robot.move(direction)
         if (grid.getValue(nextPosition) == '#') {
             return
         } else if (grid.getValue(nextPosition) == '.') {
@@ -119,7 +119,7 @@ data class State(
     val shiftRight = Vector(1, 0)
 
     fun movePart2(direction: Direction) {
-        var nextPosition = robot.move(direction)
+        val nextPosition = robot.move(direction)
         if (grid.getValue(nextPosition) == '#') {
             return
         } else if (grid.getValue(nextPosition) == '.') {
@@ -153,7 +153,7 @@ data class State(
             robot = nextPosition
         } else {
             // UP/DOWN can push multiple boxes
-            var scanPosition = nextPosition.asCopy()
+            val scanPosition = nextPosition.asCopy()
 
             val leftside = if (grid.getValue(scanPosition) == '[') {
                 scanPosition
@@ -166,13 +166,13 @@ data class State(
 
             val updateOrder = mustBeUpdated
                 .distinct()
-                .sortedWith(Comparator { a, b ->
+                .sortedWith { a, b ->
                     if (direction == Direction.DOWN) {
                         (b.row - a.row).toInt()
                     } else {
                         (a.row - b.row).toInt()
                     }
-                })
+                }
 
             for (leftSide in updateOrder) {
                 val rightSide = leftSide + shiftRight
@@ -217,19 +217,15 @@ data class State(
         }
 
 
-        val left = if (leftValue == '[') {
-            canMove(nextLeftPosition, direction, aggregate)
-        } else if (leftValue == '.') {
-            true to aggregate
-        } else {
-            canMove(nextLeftPosition + shiftLeft, direction, aggregate)
+        val left = when (leftValue) {
+            '[' -> canMove(nextLeftPosition, direction, aggregate)
+            '.' -> true to aggregate
+            else -> canMove(nextLeftPosition + shiftLeft, direction, aggregate)
         }
-        val right = if (rightValue == '[') {
-            canMove(nextRightPosition, direction, aggregate)
-        } else if (rightValue == '.') {
-            true to aggregate
-        } else {
-            canMove(nextRightPosition + shiftLeft, direction, aggregate)
+        val right = when (rightValue) {
+            '[' -> canMove(nextRightPosition, direction, aggregate)
+            '.' -> true to aggregate
+            else -> canMove(nextRightPosition + shiftLeft, direction, aggregate)
         }
 
         return Pair(
@@ -238,6 +234,7 @@ data class State(
         )
     }
 }
+
 fun parseInput(input: List<String>): State {
     val grid = input
         .asSequence()
@@ -260,9 +257,8 @@ fun parseInput(input: List<String>): State {
 
 fun scaleUp(grid: ArrayGrid<Char>): ArrayGrid<Char> {
     val scaledUp = ArrayGrid.create(
-        Dimension(grid.dimension.height, grid.dimension.width * 2),
-        { '.' }
-    )
+        Dimension(grid.dimension.height, grid.dimension.width * 2)
+    ) { '.' }
 
     for (rowIdx in grid.rowIndices) {
         val row = grid.grid[rowIdx]
@@ -274,14 +270,17 @@ fun scaleUp(grid: ArrayGrid<Char>): ArrayGrid<Char> {
                     scaledUp.grid[rowIdx][colIdx * 2] = '#'
                     scaledUp.grid[rowIdx][colIdx * 2 + 1] = '#'
                 }
+
                 'O' -> {
                     scaledUp.grid[rowIdx][colIdx * 2] = '['
                     scaledUp.grid[rowIdx][colIdx * 2 + 1] = ']'
                 }
+
                 '.' -> {
                     scaledUp.grid[rowIdx][colIdx * 2] = '.'
                     scaledUp.grid[rowIdx][colIdx * 2 + 1] = '.'
                 }
+
                 '@' -> {
                     scaledUp.grid[rowIdx][colIdx * 2] = '@'
                     scaledUp.grid[rowIdx][colIdx * 2 + 1] = '.'

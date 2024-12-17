@@ -178,4 +178,3 @@ fun BigDecimal.isIntIsh(): Boolean {
 }
 
 fun <A, B, C> Pair<A, B>.prepend(other: C): Triple<C, A, B> = Triple(other, this.first, this.second)
-fun <A, B, C> Pair<A, B>.append(other: C): Triple<A, B, C> = Triple(this.first, this.second, other)

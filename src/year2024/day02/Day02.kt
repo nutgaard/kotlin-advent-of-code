@@ -60,8 +60,8 @@ fun part2(input: List<String>): Int {
 
 fun Int.sign(): Int {
     if (this < 0) return -1
-    else if (this > 0) return 1;
-    return 0;
+    else if (this > 0) return 1
+    return 0
 }
 
 fun IntArray.withoutIndex(index: Int): IntArray {

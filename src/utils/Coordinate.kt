@@ -30,10 +30,10 @@ interface Coordinate {
         return !this.withinBoundsOf(grid)
     }
 
-    fun up() = Coordinate.of(row - 1, column)
-    fun down() = Coordinate.of(row + 1, column)
-    fun left() = Coordinate.of(row, column - 1)
-    fun right() = Coordinate.of(row, column + 1)
+    fun up() = of(row - 1, column)
+    fun down() = of(row + 1, column)
+    fun left() = of(row, column - 1)
+    fun right() = of(row, column + 1)
 
     fun gridStepsBetween(other: Coordinate): Long {
         return abs(this.row - other.row) + abs(this.column - other.column)
@@ -42,7 +42,7 @@ interface Coordinate {
     operator fun component1(): Long = row
     operator fun component2(): Long = column
     operator fun plus(vector: Vector): Coordinate {
-        return Coordinate.of(
+        return of(
             row = this.row + vector.y,
             column = this.column + vector.x
         )
@@ -52,7 +52,7 @@ interface Coordinate {
         fun of(row: Int, column: Int): Coordinate = CoordinateImpl(row, column)
         fun of(row: Long, column: Long): Coordinate = CoordinateImpl(row, column)
 
-        fun fromArrayIndex(index: Int, columnCount: Int) = Coordinate.of(
+        fun fromArrayIndex(index: Int, columnCount: Int) = of(
             row = index / columnCount,
             column = index % columnCount
         )

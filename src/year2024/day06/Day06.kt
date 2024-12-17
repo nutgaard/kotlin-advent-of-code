@@ -67,7 +67,7 @@ fun part2(input: List<String>): Int {
         if (result is WalkingResult.Cycle) counter++
     }
 
-    println("Part 2: ${counter}")
+    println("Part 2: $counter")
     println()
     return counter
 }

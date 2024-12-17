@@ -32,10 +32,11 @@ fun part1(input: List<String>): Int {
     firstList.sort()
     secondList.sort()
 
-    return firstList.zip(secondList)
-        .map { (first, second) ->
+    return firstList
+        .zip(secondList)
+        .sumOf { (first, second) ->
             abs(first - second)
-        }.sum()
+        }
 }
 
 fun part2(input: List<String>): Int {

@@ -122,8 +122,8 @@ data class RuleLine(
 }
 
 sealed class Destination {
-    object Rejected : Destination()
-    object Accepted : Destination()
+    data object Rejected : Destination()
+    data object Accepted : Destination()
     data class Named(val name: String): Destination()
 
     companion object {

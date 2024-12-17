@@ -58,7 +58,7 @@ data class PageOrderingValidation(
 data class PageOrdering(
     val pages: List<Int>
 ) {
-    fun getMiddleValue() = this.pages.get(this.pages.size / 2)
+    fun getMiddleValue() = this.pages[this.pages.size / 2]
 
     fun validate(rules: List<PageOrderingRule>): PageOrderingValidation {
         return PageOrderingValidation(

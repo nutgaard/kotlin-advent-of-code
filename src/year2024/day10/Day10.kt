@@ -4,15 +4,15 @@ import utils.*
 
 const val dir = "year2024/day10"
 fun main() {
-    val testInputPart1_1 = readInput("${dir}/Part01_1_test")
-    val testInputPart1_2 = readInput("${dir}/Part01_2_test")
-    val testInputPart2_1 = readInput("${dir}/Part02_1_test")
-    val testInputPart2_2 = readInput("${dir}/Part02_2_test")
+    val testInputPart1x1 = readInput("${dir}/Part01_1_test")
+    val testInputPart1x2 = readInput("${dir}/Part01_2_test")
+    val testInputPart2x1 = readInput("${dir}/Part02_1_test")
+    val testInputPart2x2 = readInput("${dir}/Part02_2_test")
 
-    verifySolution(testInputPart1_1, 2, ::part1)
-    verifySolution(testInputPart1_2, 36, ::part1)
-    verifySolution(testInputPart2_1, 3, ::part2)
-    verifySolution(testInputPart2_2, 81, ::part2)
+    verifySolution(testInputPart1x1, 2, ::part1)
+    verifySolution(testInputPart1x2, 36, ::part1)
+    verifySolution(testInputPart2x1, 3, ::part2)
+    verifySolution(testInputPart2x2, 81, ::part2)
 
     val input = readInput("$dir/Input")
 
@@ -39,7 +39,7 @@ fun part2(input: List<String>): Int {
 }
 
 fun findValidTrails(grid: ArrayGrid<Int>, trailhead: Coordinate, allowReuse: Boolean): Int {
-    var trailsFound: Int = 0
+    var trailsFound = 0
     val visited = mutableSetOf<Coordinate>()
     val stack = ConfigurableDeque.Stack<Coordinate>()
     stack.push(trailhead)

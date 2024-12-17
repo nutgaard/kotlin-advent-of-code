@@ -74,6 +74,5 @@ fun part2(input: List<String>): Int {
 
     return multiplications
         .filter { it.isEnabled(flags) }
-        .map { it.product() }
-        .sum()
+        .sumOf { it.product() }
 }

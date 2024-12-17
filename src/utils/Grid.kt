@@ -108,7 +108,6 @@ data class ArrayGrid<T>(val grid: Array<Array<T>>) : Grid<T> {
     override val rowIndices: IntRange = grid.indices
     override val columnIndices: IntRange = grid.first().indices
 
-
     override fun getValue(coordinate: Coordinate): T {
         return grid[coordinate.row.toInt()][coordinate.column.toInt()]
     }
@@ -148,6 +147,19 @@ data class ArrayGrid<T>(val grid: Array<Array<T>>) : Grid<T> {
             grid[index] = grid[index].copyOf()
         }
         return ArrayGrid(grid)
+    }
+
+    override fun equals(other: Any?): Boolean {
+        if (this === other) return true
+        if (javaClass != other?.javaClass) return false
+
+        other as ArrayGrid<*>
+
+        return grid.contentDeepEquals(other.grid)
+    }
+
+    override fun hashCode(): Int {
+        return grid.contentDeepHashCode()
     }
 
     companion object {

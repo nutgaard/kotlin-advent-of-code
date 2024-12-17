@@ -30,8 +30,8 @@ fun part1(input: String): Long {
 }
 
 fun expandInput(input: String): ArrayList<String> {
-    var fileId: Int = 0
-    var isFile: Boolean = true
+    var fileId = 0
+    var isFile = true
 
     val chars = input.toCharArray()
 
@@ -111,8 +111,7 @@ data class ContinuousSpace(
     var value: String
 )
 fun findContinuous(disk: ArrayList<String>): MutableList<ContinuousSpace> {
-    var out = mutableListOf<ContinuousSpace>()
-
+    val out = mutableListOf<ContinuousSpace>()
     var current: String? = null
     var startIndex: Int? = null
 
@@ -132,12 +131,6 @@ fun findContinuous(disk: ArrayList<String>): MutableList<ContinuousSpace> {
     }
 
     return out
-}
-
-fun List<ContinuousSpace>.asString(): String = buildString {
-    for (space in this@asString) {
-        repeat(space.size) { append(space.value) }
-    }
 }
 
 fun List<ContinuousSpace>.asList(): List<String> = buildList {

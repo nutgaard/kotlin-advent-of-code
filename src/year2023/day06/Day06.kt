@@ -37,9 +37,8 @@ fun simulateRace(raceSpec: Pair<Long, Long>): Long {
     val (time, recordDistance) = raceSpec
     var recordBreaking = 0L
     for (btnHold in 0..time) {
-        val speed = btnHold
         val timeLeft = time - btnHold
-        val distance = speed * timeLeft
+        val distance = btnHold * timeLeft
         if (distance > recordDistance) {
             recordBreaking++
         }

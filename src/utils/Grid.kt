@@ -48,6 +48,7 @@ interface Grid<T> {
     val rowIndices: IntRange
     val columnIndices: IntRange
 
+    fun getValue(row: Int, column: Int): T
     fun getValue(coordinate: Coordinate): T
     fun getRow(row: Int): Array<T>
     fun setValue(coordinate: Coordinate, value: T)
@@ -112,6 +113,10 @@ data class ArrayGrid<T>(val grid: Array<Array<T>>) : Grid<T> {
         return grid[coordinate.row.toInt()][coordinate.column.toInt()]
     }
 
+    override fun getValue(row: Int, column: Int): T {
+        return grid[row][column]
+    }
+
     override fun setValue(coordinate: Coordinate, value: T) {
         grid[coordinate.row.toInt()][coordinate.column.toInt()] = value
     }
@@ -163,6 +168,10 @@ data class ArrayGrid<T>(val grid: Array<Array<T>>) : Grid<T> {
     }
 
     companion object {
+        inline fun <reified T> create(rows: Int, columns: Int, fn: (coordinate: Coordinate) -> T): ArrayGrid<T> {
+            return create(Dimension(rows, columns), fn)
+        }
+
         inline fun <reified T> create(dimension: Dimension, fn: (coordinate: Coordinate) -> T): ArrayGrid<T> {
             val grid = Array(dimension.height) { row ->
                 Array(dimension.width) { column ->
@@ -211,6 +220,10 @@ class BitGrid(val grid: Array<SizeAwareBitSet>) : Grid<Boolean> {
 
     override fun getValue(coordinate: Coordinate): Boolean {
         return grid[coordinate.row.toInt()][coordinate.column.toInt()]
+    }
+
+    override fun getValue(row: Int, column: Int): Boolean {
+        return grid[row][column]
     }
 
     override fun setValue(coordinate: Coordinate, value: Boolean) {

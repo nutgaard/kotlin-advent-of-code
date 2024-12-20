@@ -10,12 +10,12 @@ import kotlin.time.measureTimedValue
 /**
  * Reads lines from the given input txt file.
  */
-fun readInput(name: String) = Path("src/$name.txt").readLines()
+fun readInput(name: String) = Path("src/main/kotlin/$name.txt").readLines()
 fun writerForOutput(name: String): Writer {
-    return Path("src/$name.txt").writer()
+    return Path("src/main/kotlin/$name.txt").writer()
 }
 fun writeOutput(name: String, content: List<String>) {
-    Path("src/$name.txt").writeLines(content)
+    Path("src/main/kotlin/$name.txt").writeLines(content)
 }
 
 /**

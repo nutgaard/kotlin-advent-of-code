@@ -16,14 +16,11 @@ dependencies {
     testRuntimeOnly("org.junit.jupiter:junit-jupiter-engine:5.11.4")
 }
 
-sourceSets {
-    main {
-        kotlin.srcDir("src")
-    }
-}
-
 tasks.test {
     useJUnitPlatform()
+    testLogging {
+        events("passed", "skipped", "failed")
+    }
 }
 
 tasks {

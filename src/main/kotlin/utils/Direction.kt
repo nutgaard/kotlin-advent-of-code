@@ -18,7 +18,7 @@ enum class Direction(val row: Int, val column: Int) {
                 ">" -> RIGHT
                 "L" -> LEFT
                 "<" -> LEFT
-                else -> error("Unrecognized direction $str")
+                else -> error("Unrecognized direction $str (${str.length})")
             }
         }
     }
@@ -47,6 +47,15 @@ enum class Direction(val row: Int, val column: Int) {
             RIGHT -> LEFT
             DOWN -> UP
             LEFT -> RIGHT
+        }
+    }
+
+    fun inArrowNotation(): String {
+        return when (this) {
+            UP -> "^"
+            DOWN -> "v"
+            LEFT -> "<"
+            RIGHT -> ">"
         }
     }
 }

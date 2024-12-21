@@ -45,8 +45,12 @@ data class Dimension(val height: Int, val width: Int) {
 }
 interface Grid<T> {
     val dimension: Dimension
-    val rowIndices: IntRange
-    val columnIndices: IntRange
+    val rowIndices: IntRange get() {
+        return 0 until dimension.height
+    }
+    val columnIndices: IntRange get() {
+        return 0 until dimension.width
+    }
 
     fun getValue(row: Int, column: Int): T
     fun getValue(coordinate: Coordinate): T
@@ -104,10 +108,62 @@ interface Grid<T> {
     }
 }
 
+data class SingleArrayGrid<T>(
+    override val dimension: Dimension,
+    val data: Array<T>
+): Grid<T> {
+    override fun getValue(row: Int, column: Int): T {
+        return data[arrayIdx(row, column)]
+    }
+
+    override fun getValue(coordinate: Coordinate): T {
+        return data[arrayIdx(coordinate.row, coordinate.column)]
+    }
+
+    override fun getRow(row: Int): Array<T> {
+        val start = arrayIdx(row, 0)
+        return data.sliceArray(start until start+dimension.width)
+    }
+
+    override fun flattenToList(): List<T> {
+        return data.toList()
+    }
+
+    override fun copyOf(): Grid<T> {
+        return SingleArrayGrid(
+            dimension = dimension,
+            data = data.copyOf()
+        )
+    }
+
+    override fun findCoordinate(predicate: (T) -> Boolean): Coordinate? {
+        for (idx in data.indices) {
+            val value = data[idx]
+            if (predicate(value)) return coordinateIdx(idx)
+        }
+        return null
+    }
+
+    override fun setValue(coordinate: Coordinate, value: T) {
+        val idx = arrayIdx(coordinate.row, coordinate.column)
+        data[idx] = value
+    }
+
+    inline fun arrayIdx(row: Int, column: Int): Int {
+        return row * dimension.width + column
+    }
+    inline fun arrayIdx(row: Long, column: Long): Int {
+        return (row * dimension.width + column).toInt()
+    }
+    inline fun coordinateIdx(int: Int): Coordinate {
+        val row = int.rem(dimension.width)
+        val column = int.mod(dimension.width)
+        return Coordinate.of(row, column)
+    }
+}
+
 data class ArrayGrid<T>(val grid: Array<Array<T>>) : Grid<T> {
     override val dimension = Dimension(grid.size, grid.first().size)
-    override val rowIndices: IntRange = grid.indices
-    override val columnIndices: IntRange = grid.first().indices
 
     override fun getValue(coordinate: Coordinate): T {
         return grid[coordinate.row.toInt()][coordinate.column.toInt()]
@@ -214,9 +270,6 @@ inline fun <reified T> ArrayGrid<T>.transpose(defaultValue: T): ArrayGrid<T> {
 
 class BitGrid(val grid: Array<SizeAwareBitSet>) : Grid<Boolean> {
     override val dimension = Dimension(grid.size, grid.first().nbits)
-    override val rowIndices: IntRange = grid.indices
-    override val columnIndices: IntRange = 0 until grid.first().nbits
-
 
     override fun getValue(coordinate: Coordinate): Boolean {
         return grid[coordinate.row.toInt()][coordinate.column.toInt()]

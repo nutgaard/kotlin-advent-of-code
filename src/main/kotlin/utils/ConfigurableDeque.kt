@@ -7,6 +7,11 @@ open class ConfigurableDeque<T>(
     val type: Type,
     val list: Deque<T> = LinkedList()
 ) {
+    val size: Int
+        get() {
+            return list.size
+        }
+
     enum class Type {
         STACK, QUEUE
     }

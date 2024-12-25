@@ -11,7 +11,7 @@ interface Coordinate {
     }
 
     fun <T> getValue(grid: SparseGrid<T>): T {
-        return requireNotNull(grid.get(this))
+        return requireNotNull(grid.getOrNull(this))
     }
 
     fun <T> setValue(grid: Grid<T>, value: T) {

@@ -8,13 +8,25 @@ class SparseGrid<T> {
     val rowDomain = MutableMinMax(0, 0)
     val columnComain = MutableMinMax(0, 0)
 
+    fun set(
+        coordinate: Coordinate,
+        update: (current: T?) -> T
+    ) {
+        val current = getOrNull(coordinate)
+        set(coordinate, update(current))
+    }
+
     fun set(coordinate: Coordinate, value: T) {
         grid.computeIfAbsent(coordinate.row) { mutableMapOf() }[coordinate.column] = value
         rowDomain.update(coordinate.row)
         columnComain.update(coordinate.column)
     }
 
-    fun get(coordinate: Coordinate): T? {
+    fun getOrDefault(coordinate: Coordinate, defaultValue: T): T {
+        return getOrNull(coordinate) ?: defaultValue
+    }
+
+    fun getOrNull(coordinate: Coordinate): T? {
         return grid[coordinate.row]?.get(coordinate.column)
     }
 

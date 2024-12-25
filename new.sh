@@ -7,8 +7,7 @@ echo "Prepping files for $year - $day"
 
 # Remove and recreate directory
 rm -rf "src/main/kotlin/year$year/day$day"
-echo "Copying from src/main/kotlin/dayXX to src/main/kotlin/year$year/day$day"
-ls src/main/kotlin/dayXX
+echo "Copying from src/main/kotlin/dayXX to src/main/kotlin/year$year"
 cp -r "src/main/kotlin/dayXX" "src/main/kotlin/year$year/day$day"
 
 # Verify file existence

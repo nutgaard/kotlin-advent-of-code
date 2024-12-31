@@ -60,7 +60,7 @@ fun part2(input: List<String>): String {
 
 private fun parse(input: List<String>): Pair<List<List<String>>, Map<String, MutableSet<String>>> {
     val lines = input.map { it.split("-") }
-    val names = lines.flatten()
+    val names = lines.flatten<String>()
         .asSequence()
         .distinct()
         .toList()

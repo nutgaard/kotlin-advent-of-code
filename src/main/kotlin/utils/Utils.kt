@@ -57,6 +57,19 @@ fun String.fromAlpha(alphabet: Alphabet): Long {
     return result
 }
 
+fun <T, U> Sequence<T>.cartesianProduct(seq2: Sequence<U>): Sequence<Pair<T, U>> {
+    return this.flatMap { first ->
+        seq2.map { second -> Pair(first, second) }
+    }
+}
+
+fun <T> Any.flatten(): List<T> {
+    return when (this) {
+        is Pair<*, *> -> this.toList().flatMap { it?.flatten() ?: emptyList() }
+        else -> listOf(this as T)
+    }
+}
+
 fun main() {
     val alphabet = Alphabet("abcdefghijklmnopqrstuvwxyz")
 

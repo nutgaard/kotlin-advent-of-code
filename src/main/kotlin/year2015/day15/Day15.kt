@@ -1,11 +1,7 @@
 package year2015.day15
 
-import utils.println
-import utils.readInput
-import utils.timed
-import utils.verifySolution
+import utils.*
 import kotlin.math.max
-import kotlin.math.min
 
 const val dir = "year2015/day15"
 fun main() {
@@ -109,25 +105,5 @@ data class Ingredient(
                 calories = words[10].toInt(),
             )
         }
-    }
-}
-
-data class Quad<S, T, U, V>(
-    val first: S,
-    val second: T,
-    val third: U,
-    val fourth: V,
-)
-
-fun <T, U> Sequence<T>.cartesianProduct(seq2: Sequence<U>): Sequence<Pair<T, U>> {
-    return this.flatMap { first ->
-        seq2.map { second -> Pair(first, second) }
-    }
-}
-
-fun <T> Any.flatten(): List<T> {
-    return when (this) {
-        is Pair<*, *> -> this.toList().flatMap { it?.flatten() ?: emptyList() }
-        else -> listOf(this as T)
     }
 }

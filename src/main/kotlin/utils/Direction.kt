@@ -58,6 +58,13 @@ enum class Direction(val row: Int, val column: Int) {
             RIGHT -> ">"
         }
     }
+
+    fun withMagnitude(block: Int): Vector {
+        return Vector(
+            x = this.column * block,
+            y = this.row * block
+        )
+    }
 }
 
 fun Coordinate.move(direction: Direction) = Coordinate.of(

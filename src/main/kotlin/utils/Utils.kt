@@ -1,4 +1,7 @@
+@file:OptIn(ExperimentalStdlibApi::class)
 package utils
+
+import java.security.MessageDigest
 
 fun List<String>.toCharGrid(): ArrayGrid<Char> {
     val grid = this
@@ -68,6 +71,12 @@ fun <T> Any.flatten(): List<T> {
         is Pair<*, *> -> this.toList().flatMap { it?.flatten() ?: emptyList() }
         else -> listOf(this as T)
     }
+}
+
+fun md5(value: String): String {
+    val digest = MessageDigest.getInstance("MD5")
+    val bytes = digest.digest(value.toByteArray())
+    return bytes.toHexString()
 }
 
 fun main() {

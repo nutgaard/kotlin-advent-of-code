@@ -1,11 +1,6 @@
-@file:OptIn(ExperimentalStdlibApi::class)
-
 package year2015.day04
 
-import utils.println
-import utils.readInput
-import utils.timed
-import utils.verifySolution
+import utils.*
 import java.security.MessageDigest
 import java.util.stream.IntStream
 
@@ -40,10 +35,4 @@ fun part2(input: String): Int {
         .map { (v, _) -> v }
         .findFirst()
         .orElse(-1)
-}
-
-fun md5(value: String): String {
-    val digest = MessageDigest.getInstance("MD5")
-    val bytes = digest.digest(value.toByteArray())
-    return bytes.toHexString()
 }
